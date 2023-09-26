@@ -1,2 +1,9 @@
-# Sistemas-Operativos-en-Tiempo-Real
-Sistemas Operativos en Tiempo Real
+# Instrumentación Virtual 3MM3
+
+# Integrantes del equipo:
+
+- Argüelles Rojas Alejandra
+
+- Gutiérrez Godoy Diana Laura
+
+- Ortiz Villa Fabio
