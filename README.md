@@ -1,4 +1,4 @@
-# Instrumentación Virtual 3MM3
+# Instrumentación Virtual 3MM6
 
 # Integrantes del equipo:
 
