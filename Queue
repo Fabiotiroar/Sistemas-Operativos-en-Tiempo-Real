@@ -1,0 +1,145 @@
+static int no_tarea = 80;
+static int buf[80];
+static int termine=0;
+int num =1;
+static int apuntadorEntregar = 0;    // Indice del Entregar. En qué espacios pondrá los datos.
+static int apuntadorLeer = 0;    // Indice del Leer. En qué espacios pondrá los datos.
+SemaphoreHandle_t barridoSemaforo=xSemaphoreCreateCounting(no_tarea,0); //semaforo que no es binario, permite sincronizar
+static SemaphoreHandle_t LER; //semaforo binario, permite sincronizar
+
+void tareaEntregar(void * parameter){
+  String mns_generido = "Tarea #: ";
+  Serial.print(mns_generido);
+  Serial.println((int)parameter);
+  xSemaphoreGive(barridoSemaforo);
+  buf[apuntadorEntregar]= num;
+  num=num+2;
+  apuntadorEntregar=apuntadorEntregar+1;
+  if(apuntadorEntregar==80){
+    Serial.println("Ya acabe!!!");
+    xSemaphoreGive(LER);
+  }
+  vTaskDelete(NULL);
+}
+
+void tareaLeer(void * parameter){
+  xSemaphoreTake(LER,portTICK_PERIOD_MS);
+Serial.println(" ");
+  for(int i=0;i<=80;i++){
+    Serial.print(buf[i]);
+    Serial.print(" ");
+}
+}
+
+void setup(){
+  Serial.begin(115200);
+  Serial.println("Inicio del programa");
+  LER=xSemaphoreCreateBinary();
+  int r;
+  int j=0;
+  for(int i=0;i<no_tarea;i++){
+    //r=i/2;
+    if(i % 2 == 0){
+      j=j+1;
+  }
+xTaskCreatePinnedToCore(tareaEntregar,
+                          "Tarea Entregar",
+                          1024,
+                          (void *)i,
+                          no_tarea - j,
+                          NULL,
+                          1);
+  xTaskCreatePinnedToCore(tareaLeer,
+                          "Tarea leer",
+                          1024,
+                          NULL,
+                          1,
+                          NULL,
+                          1); //por el 1 ya no tenemos que poner todo lo del free rtos
+    vTaskDelay(200 /portTICK_PERIOD_MS);
+  }
+  for(int i=0;i<no_tarea;i++){
+    xSemaphoreTake(barridoSemaforo, portMAX_DELAY);
+  }
+  Serial.println("Tareas cargadas en semaforo");
+}
+
+void loop(){
+  vTaskSuspend(NULL);
+  //vTaskDelay(1000/portTICK_PERIOD_MS);
+}
+
+
+
+
+
+
+
+
+static int no_tarea = 80;
+static int buf[80];
+static int termine=0;
+int num =1;
+static int apuntadorEntregar = 0;    // Indice del Entregar. En qué espacios pondrá los datos.
+static int apuntadorLeer = 0;    // Indice del Leer. En qué espacios pondrá los datos.
+SemaphoreHandle_t barridoSemaforo=xSemaphoreCreateCounting(no_tarea,0); //semaforo que no es binario, permite sincronizar
+static SemaphoreHandle_t LER; //semaforo binario, permite sincronizar
+
+void tareaEntregar(void * parameter){
+  String mns_generido = "Tarea #: ";
+  Serial.print(mns_generido);
+  Serial.println((int)parameter);
+  xSemaphoreGive(barridoSemaforo);
+  buf[apuntadorEntregar]= num;
+  num=num+2;
+  apuntadorEntregar=apuntadorEntregar+1;
+  if(apuntadorEntregar==80){
+    Serial.println("Ya acabe!!!");
+    xSemaphoreGive(LER);
+  }
+  vTaskDelete(NULL);
+}
+
+void tareaLeer(void * parameter){
+ /* xSemaphoreTake(LER,portTICK_PERIOD_MS);
+  Serial.println("Hola perros!!");
+*/
+}
+
+void setup(){
+  Serial.begin(115200);
+  Serial.println("Inicio del programa");
+  LER=xSemaphoreCreateBinary();
+  int r;
+  int j=0;
+  for(int i=0;i<no_tarea;i++){
+    //r=i/2;
+    if(i % 2 == 0){
+      j=j+1;
+  }
+xTaskCreatePinnedToCore(tareaEntregar,
+                          "Tarea Entregar",
+                          1024,
+                          (void *)i,
+                          no_tarea - j,
+                          NULL,
+                          1);
+  xTaskCreatePinnedToCore(tareaLeer,
+                          "Tarea leer",
+                          1024,
+                          NULL,
+                          1,
+                          NULL,
+                          1); //por el 1 ya no tenemos que poner todo lo del free rtos
+    vTaskDelay(200 /portTICK_PERIOD_MS);
+  }
+  for(int i=0;i<no_tarea;i++){
+    xSemaphoreTake(barridoSemaforo, portMAX_DELAY);
+  }
+  Serial.println("Tareas cargadas en semaforo");
+}
+
+void loop(){
+  vTaskSuspend(NULL);
+  //vTaskDelay(1000/portTICK_PERIOD_MS);
+}
