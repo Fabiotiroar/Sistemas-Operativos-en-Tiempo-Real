@@ -1,4 +1,4 @@
-# Instrumentación Virtual 3MM6
+#   Sistemas Operativos en Tiempo Real 3MM6
 
 # Integrantes del equipo:
 
